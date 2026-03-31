@@ -1,216 +1,129 @@
-![MNN](doc/banner.png)
+# MNN Inference(MNN-Cli)
+
+> 本项目从 [Alibaba/MNN](https://github.com/alibaba/MNN) 项目中剥离 `MNNCli` 组件，旨在构建一个轻量级、易部署的推理服务器。
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-lightgrey.svg)]()
+[![Architecture](https://img.shields.io/badge/Architecture-x86__64-orange.svg)]()
+
+## 📖 项目简介
+
+本项目致力于解决原版 MNN 在特定场景下部署过重、编译复杂的问题。通过剥离核心推理组件，我们提供了一个专注于服务器端部署的解决方案。
+
+## 🎯 一期目标 (Phase 1)
+
+本项目第一阶段主要聚焦于以下核心问题的解决与优化：
+
+### 1. 仓库精简
+
+- 移除不必要的依赖与模块，显著减小仓库体积，提升克隆与编译效率。
+
+### 2. 多平台编译支持 (X86 架构)
+
+重点解决 **X86 架构** 下 **Windows** 和 **Linux** 环境的编译兼容性问题。
+
+> **注意**：Apple 芯片 (ARM) 的 MacOS 支持为低优先级；**不支持** x86 架构的 MacOS 编译。
+
+#### 支持的环境列表
+
+| 操作系统 | 版本/环境 | 架构 | 状态 |
+| :--- | :--- | :--- | :--- |
+| **Windows** | Windows 11 + VS2022 | x64 | ❌ 不支持|
+| **Windows** | Windows 11 + VS2026 | x64 | ❌ 不支持 |
+| **CentOS** | 7 | x64 | ❌ 不支持 |
+| **CentOS** | 8 | x64 | ❌ 不支持 |
+| **CentOS** | Stream | x64 | ❌ 不支持 |
+| **Rocky Linux** | 9 | x64 | ❌ 不支持 |
+| **Rocky Linux** | 10 | x64 | ❌ 不支持 |
+| **Ubuntu** | 20.04 | x64 | ❌ 不支持 |
+| **Ubuntu** | 22.04 | x64 | ❌ 不支持 |
+| **Ubuntu** | 24.04 | x64 | ❌ 不支持 |
+| **Ubuntu** | 26.04 | x64 | ❌ 不支持 |
+| **Debian** | 11 | x64 | ❌ 不支持 |
+| **Debian** | 12 | x64 | ❌ 不支持 |
+
+### 3. 媒体格式支持
+
+- **[未解决] Omni 模型**：修复不支持读取 **WebP** 格式图片的问题。
+- **[未解决] 音视频处理**：针对音频和视频输入，计划采用 `ffmpeg` 进行强制转码以统一格式。
+
+### 4. HTTP/HTTPS 接口完善
+
+- **[未解决] 身份鉴权**：支持 API 访问鉴权机制。
+- **[未解决] 安全传输**：原生支持 HTTPS 协议。
+- **[未解决] 用量统计**：(低优先级) 支持请求消耗量统计。
+
 ---
-[![License](https://img.shields.io/github/license/alibaba/MNN)](LICENSE.txt)
-[![Documentation](https://img.shields.io/badge/Documentation-Read-green)](https://mnn-docs.readthedocs.io/en/latest/)
-[![中文版本](https://img.shields.io/badge/Language-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-green)](README_CN.md)
-[![日本語バージョン](https://img.shields.io/badge/Language-%E6%97%A5%E6%9C%AC%E8%AA%9E-green)](README_JP.md)
-[![MNN Homepage](https://img.shields.io/badge/Homepage-Visit-green)](http://www.mnn.zone)
 
-[![MNN Chat App](https://img.shields.io/badge/Apps-MNN_Chat-blue)](./apps/Android/MnnLlmChat/README.md)
-[![TaoAvatar](https://img.shields.io/badge/Apps-MNN_TaoAvatar-blue)](./apps/Android/Mnn3dAvatar/README.md)
-[![Sana](https://img.shields.io/badge/Apps-Sana_Image_Edit-blue)](./apps/sana/README.md)
+## 🛠 技术栈说明
 
-## News 🔥
-- [2026/03/05] Support Qwen3.5 Series.
-<p align="center">
-  <img width="15%" alt="Icon"  src="https://meta.alicdn.com/data/mnn/assets/qwen35_1.jpg" style="margin: 0 10px;">
-  <img width="15%" alt="Icon" src="https://meta.alicdn.com/data/mnn/assets/qwen35_2.jpg" style="margin: 0 10px;">
-  <img width="15%" alt="Icon" src="https://meta.alicdn.com/data/mnn/assets/qwen35_3.jpg" style="margin: 0 10px;">
-</p>
+- **关于 GoLang 的说明**:
+  鉴于 GoLang 调用 C++ 库的复杂性与性能开销，本项目**不计划**改用 GoLang 重写 HTTP 服务器部分，坚持使用 C++ 以保持链路统一与性能最优。
 
-- [2026/02/13] MNN-Sana-Edit-V2 is now available at [apps](./apps/sana/README.md), offering cartoon-style photo editing based on Sana.
-<p align="center">
-  <img width="80%" alt="Icon"  src="https://meta.alicdn.com/data/mnn/assets/sana_show_case.jpg" style="margin: 0 10px;">
-</p>
+---
 
-<details>
-<summary> History News </summary>
+## 🚀 使用指引
 
-- [2025/10/16] Support Qwen3-VL Series.
-- [2025/06/11] New App MNN TaoAvatar released, you can talk with 3DAvatar offline with LLM, ASR, TTS, A2BS and NNR models all run local on your device!! [MNN TaoAvatar](./apps/Android/Mnn3dAvatar/README.md)
-<p align="center">
-  <img width="20%" alt="Icon"  src="https://meta.alicdn.com/data/mnn/avatar/avatar_demo.gif" style="margin: 0 10px;">
-</p>
+编译完成后，您可以按照以下步骤启动服务并进行调用。
 
-- [2025/05/12] android app support qwen2.5 omni 3b and 7b [MNN Chat App](./apps/Android/MnnLlmChat/README.md#releases).
-<p align="center">
-  <img width="20%" alt="Icon"  src="./apps/Android/MnnLlmChat/assets/image_home_new.jpg" style="margin: 0 10px;">
-  <img width="20%" alt="Icon" src="./apps/Android/MnnLlmChat/assets/image_sound_new.jpg" style="margin: 0 10px;">
-  <img width="20%" alt="Icon" src="./apps/Android/MnnLlmChat/assets/image_image_new.jpg" style="margin: 0 10px;">
-</p>
+### 1. 启动服务
 
-- [2025/04/30] android app support qwen3 and dark mode [MNN Chat App](./apps/Android/MnnLlmChat/README.md#releases).
-<p align="center">
-  <img width="20%" alt="Icon"  src="https://meta.alicdn.com/data/mnn/qwen_3.gif" style="margin: 0 10px;">
-</p>
+可执行文件通常位于 `build/` 或 `bin/` 目录下。使用命令行参数配置模型路径和服务端口。
 
-- [2025/02/18] iOS multimodal LLM App is released [MNN LLM iOS](./apps/iOS/MNNLLMChat/README.md).
-<p align="center">
-  <img width="20%" alt="Icon"  src="./apps/iOS/MNNLLMChat/assets/introduction.gif" style="margin: 0 10px;">
-</p>
+```bash
+# Linux 示例
+mnncli -c ./models/llm_config.json --host 0.0.0.0 --port 8080 --auth_key "your_secret_key"
 
-- [2025/02/11] android app support for [deepseek r1 1.5b](./project/android/apps/MnnLlmApp/README.md#version-021).
-<p align="center">
-  <img width="20%" alt="Icon"  src="./apps/Android/MnnLlmChat/assets/deepseek_support.gif" style="margin: 0 10px;">
-</p>
+# Windows 示例
+mnncli -c ./models/llm_config.json --host 0.0.0.0 --port 8080 --auth_key "your_secret_key"
+```
 
-- [2025/01/23] We released our full multimodal LLM Android App:[MNN-LLM-Android](./apps/Android/MnnLlmChat/README.md). including text-to-text, image-to-text, audio-to-text, and text-to-image generation.
-<p align="center">
-  <img width="20%" alt="Icon"  src="./apps/Android/MnnLlmChat/assets/image_home_new.jpg" style="margin: 0 10px;">
-  <img width="20%" alt="Icon" src="./apps/Android/MnnLlmChat/assets/image_diffusion_new.jpg" style="margin: 0 10px;">
-  <img width="20%" alt="Icon" src="./apps/Android/MnnLlmChat/assets/image_sound_new.jpg" style="margin: 0 10px;">
-  <img width="20%" alt="Icon" src="./apps/Android/MnnLlmChat/assets/image_image_new.jpg" style="margin: 0 10px;">
-</p>
-</details>
+---
 
-## Intro
-MNN is a highly efficient and lightweight deep learning framework. It supports inference and training of deep learning models and has industry-leading performance for inference and training on-device. At present, MNN has been integrated into more than 30 apps of Alibaba Inc, such as Taobao, Tmall, Youku, DingTalk, Xianyu, etc., covering more than 70 usage scenarios such as live broadcast, short video capture, search recommendation, product searching by image, interactive marketing, equity distribution, security risk control. In addition, MNN is also used on embedded devices, such as IoT.
+## 📚 编译指引
 
-[MNN-LLM](./transformers/README.md) is a large language model runtime solution developed based on the MNN engine. The mission of this project is to deploy LLM models locally on everyone's platforms(Mobile Phone/PC/IOT). It supports popular large language models such as Qianwen, Baichuan, Zhipu, LLAMA, and others. [MNN-LLM User guide](https://mnn-docs.readthedocs.io/en/latest/transformers/llm.html)
-
-[MNN-Diffusion](https://github.com/alibaba/MNN/tree/master/transformers/diffusion) is a stable diffusion model runtime solution developed based on the MNN engine. The mission of this project is to deploy stable diffusion models locally on everyone's platforms. [MNN-Diffusion User guide](https://mnn-docs.readthedocs.io/en/latest/transformers/diffusion.html)
-
-![architecture](doc/architecture.png)
-
-Inside Alibaba, [MNN](https://mp.weixin.qq.com/s/5I1ISpx8lQqvCS8tGd6EJw) works as the basic module of the compute container in the [Walle](https://mp.weixin.qq.com/s/qpeCETty0BqqNJV9CMJafA) System, the first end-to-end, general-purpose, and large-scale production system for device-cloud collaborative machine learning, which has been published in the top system conference OSDI’22. The key design principles of MNN and the extensive benchmark testing results (vs. TensorFlow, TensorFlow Lite, PyTorch, PyTorch Mobile, TVM) can be found in the OSDI paper. The scripts and instructions for benchmark testing are put in the path “/benchmark”. If MNN or the design of Walle helps your research or production use, please cite our OSDI paper as follows:
-
-    @inproceedings {proc:osdi22:walle,
-        author = {Chengfei Lv and Chaoyue Niu and Renjie Gu and Xiaotang Jiang and Zhaode Wang and Bin Liu and Ziqi Wu and Qiulin Yao and Congyu Huang and Panos Huang and Tao Huang and Hui Shu and Jinde Song and Bin Zou and Peng Lan and Guohuan Xu and Fei Wu and Shaojie Tang and Fan Wu and Guihai Chen},
-        title = {Walle: An {End-to-End}, {General-Purpose}, and {Large-Scale} Production System for {Device-Cloud} Collaborative Machine Learning},
-        booktitle = {16th USENIX Symposium on Operating Systems Design and Implementation (OSDI 22)},
-        year = {2022},
-        isbn = {978-1-939133-28-1},
-        address = {Carlsbad, CA},
-        pages = {249--265},
-        url = {https://www.usenix.org/conference/osdi22/presentation/lv},
-        publisher = {USENIX Association},
-        month = jul,
-    }
+请根据您的操作系统环境选择对应的编译指南：
 
 
-## Documentation and Workbench
-MNN's docs are in place in [Read the docs](https://mnn-docs.readthedocs.io/en/latest).
+### Windows
 
-You can also read docs/README to build docs's html.
+1. [Windows 11 + VS2022 x64 编译指南](./docs/build_win11_vs2022.md)
+2. [Windows 11 + VS2026 x64 编译指南](./docs/build_win11_vs2026.md)
 
-MNN Workbench could be downloaded from [MNN's homepage](http://www.mnn.zone), which provides pretrained models, visualized training tools, and one-click deployment of models to devices.
+### Linux - CentOS/Rocky
 
-## Key Features
-### Lightweight
-- Optimized for devices, no dependencies, can be easily deployed to mobile devices and a variety of embedded devices.
-- iOS platform: static library size will full option for armv7+arm64 platforms is about 12MB, size increase of linked executables is about 2M.
-- Android platform: core so size is about 800KB (armv7a - c++_shared).
-- Using MNN_BUILD_MINI can reduce package size by about 25%, with a limit of fixed model input size
-- Support FP16 / Int8 quantize, can reduce model size 50%-70%
+3. [CentOS 7 x64 编译指南](./docs/build_centos7.md)
+4. [CentOS 8 x64 编译指南](./docs/build_centos8.md)
+5. [CentOS Stream x64 编译指南](./docs/build_centos_stream.md)
+6. [Rocky Linux 9 x64 编译指南](./docs/build_rocky9.md)
+7. [Rocky Linux 10 x64 编译指南](./docs/build_rocky10.md)
 
-### Versatility
-- Supports `Tensorflow`, `Caffe`, `ONNX`,`Torchscripts` and supports common neural networks such as `CNN`, `RNN`, `GAN`, `Transformer`.
-- Supports AI model with multi-inputs or multi-outputs, every kind of dimension format, dynamic inputs, controlflow.
-- MNN supports approximate full OPs used for the AI Model. The converter supports 178 `Tensorflow` OPs, 52 `Caffe` OPs, 163 `Torchscripts` OPs, 158 `ONNX` OPs.
-- Supports iOS 8.0+, Android 4.3+, and embedded devices with POSIX interface.
-- Supports hybrid computing on multiple devices. Currently supports CPU and GPU.
+### Linux - Ubuntu/Debian
 
+8. [Ubuntu 20.04 x64 编译指南](./docs/build_ubuntu2004.md)
+9. [Ubuntu 22.04 x64 编译指南](./docs/build_ubuntu2204.md)
+10. [Ubuntu 24.04 x64 编译指南](./docs/build_ubuntu2404.md)
+11. [Ubuntu 26.04 x64 编译指南](./docs/build_ubuntu2604.md)
+12. [Debian 11 x64 编译指南](./docs/build_debian11.md)
+13. [Debian 12 x64 编译指南](./docs/build_debian12.md)
+    
 
-### High performance
-- Implements core computing with lots of optimized assembly code to make full use of the ARM / x64 CPU.
-- Use Metal / OpenCL / Vulkan to support GPU inference on mobile.
-- Use CUDA and tensorcore to support NVIDIA GPU for better performance
-- Convolution and transposition convolution algorithms are efficient and stable. The Winograd convolution algorithm is widely used to better symmetric convolutions such as 3x3,4x4,5x5,6x6,7x7.
-- Twice speed increase for the new architecture ARM v8.2 with FP16 half-precision calculation support. 2.5 faster to use sdot for ARM v8.2 and VNNI.
+---
 
-### Ease of use
-- Support use MNN's OP to do numerical calculating like numpy.
-- Support lightweight image process module like OpenCV, which is only 100k.
-- Support build model and train it on PC / mobile.
-- MNN Python API helps ML engineers to easily use MNN to infer, train, and process images, without dipping their toes in C++ code.
+## 🔗 原始项目参考
 
-The Architecture / Precision MNN supported is shown below:
+本项目基于 [Alibaba/MNN](https://github.com/alibaba/MNN)  开发，更多底层技术细节请参考原始项目文档：
 
-- S ：Support and work well, deeply optimized, recommend to use
-- A ：Support and work well, can use
-- B ：Support but has bug or not optimized, no recommend to use
-- C ：Not Support
+- [English (Readme_EN.md)](https://github.com/alibaba/MNN/blob/master/README.md)
+- [简体中文 (Readme_CN.md)](https://github.com/alibaba/MNN/blob/master/README_CN.md)
+- [日本語 (Readme_JP.md)](https://github.com/alibaba/MNN/blob/master/README_JP.md)
 
-| Architecture / Precision |  | Normal | FP16 | BF16 | Int8 |
-| --- | --- | --- | --- | --- | --- |
-| CPU | Native | B | C | B | B |
-|  | x86/x64-SSE4.1 | A | C | C | A |
-|  | x86/x64-AVX2 | S | C | C | A |
-|  | x86/x64-AVX512 | S | C | C | S |
-|  | ARMv7a | S | S (ARMv8.2) | S | S |
-|  | ARMv8 | S | S (ARMv8.2) | S(ARMv8.6) | S |
-| GPU | OpenCL | A | S | C | S |
-|  | Vulkan | A | A | C | A |
-|  | Metal | A | S | C | S |
-|  | CUDA | A | S | C | A |
-| NPU | CoreML | A | C | C | C |
-|  | HIAI | A | C | C | C |
-|  | NNAPI | B | B | C | B |
-|  | QNN | C | B | C | C |
+---
 
+## ☕ 赞助与支持
 
-## Tools
+如果本项目对您的工作或研究有所帮助，欢迎通过 **GitHub Sponsors** 支持我，或者帮忙向社区推广本项目。
 
-Base on MNN (Tensor compute engine), we provided a series of tools for inference, train and general computation.
+> 💡 如果阿里巴巴官方愿意赞助，那就最好了 [狗头]
 
-- MNN-Converter: Convert other models to MNN models for inference, such as Tensorflow(lite), Caffe, ONNX, Torchscripts. And do graph optimization to reduce computation.
-- MNN-Compress: Compress model to reduce size and increase performance / speed
-- MNN-Express: Support model with controlflow, use MNN's OP to do general-purpose computing.
-- MNN-CV: An OpenCV-like library, but based on MNN and then much more lightweight.
-- MNN-Train: Support train MNN model.
-
-## How to Discuss and Get Help From the MNN Community
-
-The group discussions are predominantly Chinese. But we welcome and will help English speakers.
-
-Dingtalk discussion groups:
-
-Group #4 (Available): 160170007549
-
-Group #3 (Full)
-
-Group #2 (Full): 23350225
-
-Group #1 (Full): 23329087
-
-## Historical Paper
-
-The preliminary version of MNN, as mobile inference engine and with the focus on manual optimization, has also been published in MLSys 2020. Please cite the paper, if MNN previously helped your research:
-
-
-    @inproceedings{alibaba2020mnn,
-      author = {Jiang, Xiaotang and Wang, Huan and Chen, Yiliu and Wu, Ziqi and Wang, Lichuan and Zou, Bin and Yang, Yafeng and Cui, Zongyang and Cai, Yu and Yu, Tianhang and Lv, Chengfei and Wu, Zhihua},
-      title = {MNN: A Universal and Efficient Inference Engine},
-      booktitle = {MLSys},
-      year = {2020}
-    }
-
-
-## License
-Apache 2.0
-
-## Acknowledgement
-MNN participants: Taobao Technology Department, Search Engineering Team, DAMO Team, Youku and other Alibaba Group employees.
-
-MNN refers to the following projects:
-- [Caffe](https://github.com/BVLC/caffe)
-- [flatbuffer](https://github.com/google/flatbuffers)
-- [gemmlowp](https://github.com/google/gemmlowp)
-- [Google Vulkan demo](http://www.github.com/googlesamples/android-vulkan-tutorials)
-- [Halide](https://github.com/halide/Halide)
-- [Mace](https://github.com/XiaoMi/mace)
-- [ONNX](https://github.com/onnx/onnx)
-- [protobuffer](https://github.com/protocolbuffers/protobuf)
-- [skia](https://github.com/google/skia)
-- [Tensorflow](https://github.com/tensorflow/tensorflow)
-- [ncnn](https://github.com/Tencent/ncnn)
-- [paddle-mobile](https://github.com/PaddlePaddle/paddle-mobile)
-- [stb](https://github.com/nothings/stb)
-- [rapidjson](https://github.com/Tencent/rapidjson)
-- [pybind11](https://github.com/pybind/pybind11)
-- [pytorch](https://github.com/pytorch/pytorch)
-- [bolt](https://github.com/huawei-noah/bolt)
-- [libyuv](https://chromium.googlesource.com/libyuv/libyuv)
-- [libjpeg](https://github.com/libjpeg-turbo/libjpeg-turbo)
-- [opencv](https://github.com/opencv/opencv)
-- [onnxruntime](https://github.com/microsoft/onnxruntime)
+---
