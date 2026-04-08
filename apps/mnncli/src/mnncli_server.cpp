@@ -227,11 +227,11 @@ void MnncliServer::Start(MNN::Transformer::Llm* llm, bool is_r1, const std::stri
     httplib::Server server;
 
     // Define a route for the GET request on "/"
-    server.Get("/", [this](const httplib::Request& req, httplib::Response& res) {
+    server_.Get("/", [this](const httplib::Request& req, httplib::Response& res) {
         AllowCors(res);
-        res.set_content(html_content, "text/html");
+        res.set_content("This is MNNCLI Server", "text/plain");
     });
-    server.Post("/reset", [&](const httplib::Request &req, httplib::Response &res) {
+    server_.Post("/reset", [&](const httplib::Request &req, httplib::Response &res) {
       LOG_DEBUG("POST /reset");
       AllowCors(res);
       llm->reset();
@@ -253,21 +253,21 @@ void MnncliServer::Start(MNN::Transformer::Llm* llm, bool is_r1, const std::stri
         })}
       };
       res.set_content(models_response.dump(), "application/json");
-    });
-    server.Options("/v1/models", [](const httplib::Request& /*req*/, httplib::Response& res) {
-        AllowCors(res);
-        res.status = 200;
-    });
+    };
     
-    server.Options("/chat/completions", [](const httplib::Request& /*req*/, httplib::Response& res) {
+    server_.Get("/v1/models", modelsHandler);
+    server_.Get("/models", modelsHandler);
+
+    auto optionsHandler = [](const httplib::Request& /*req*/, httplib::Response& res) {
         AllowCors(res);
         res.status = 200;
-    });
+    };
+    server_.Options("/v1/models", optionsHandler);
+    server_.Options("/models", optionsHandler);
     
-    server.Options("/v1/chat/completions", [](const httplib::Request& /*req*/, httplib::Response& res) {
-        AllowCors(res);
-        res.status = 200;
-    });
+    server_.Options("/chat/completions", optionsHandler);
+    server_.Options("/v1/chat/completions", optionsHandler);
+
     // Handler function for chat completions
     auto chatCompletionsHandler = [&](const httplib::Request &req, httplib::Response &res) {
         LOG_DEBUG("POST chat/completions, handled by thread: " + std::to_string(std::hash<std::thread::id>{}(std::this_thread::get_id())));
@@ -354,8 +354,8 @@ void MnncliServer::Start(MNN::Transformer::Llm* llm, bool is_r1, const std::stri
     };
     
     // Register both endpoints with the same handler
-    server.Post("/chat/completions", chatCompletionsHandler);
-    server.Post("/v1/chat/completions", chatCompletionsHandler);
+    server_.Post("/chat/completions", chatCompletionsHandler);
+    server_.Post("/v1/chat/completions", chatCompletionsHandler);
     auto anthropicMessagesHandler = [&](const httplib::Request &req, httplib::Response &res) {
       LOG_DEBUG("POST /v1/messages");
       AllowCors(res);
@@ -476,12 +476,10 @@ void MnncliServer::Start(MNN::Transformer::Llm* llm, bool is_r1, const std::stri
       );
     };
 
-    server.Post("/v1/messages", anthropicMessagesHandler);
-    server.Options("/v1/messages", [](const httplib::Request& /*req*/, httplib::Response& res) {
-        AllowCors(res);
-        res.status = 200;
-    });
-    // Start the server on specified host and port
+    server_.Post("/v1/messages", anthropicMessagesHandler);
+    server_.Options("/v1/messages", optionsHandler);
+    
+    // Start the server (listening on the already bound port)
     LOG_DEBUG("[OK] Model initialized successfully!");
     LOG_DEBUG("[START] Server ready to listen");
     LOG_DEBUG("[TIP] Press Ctrl+C to stop the server");
