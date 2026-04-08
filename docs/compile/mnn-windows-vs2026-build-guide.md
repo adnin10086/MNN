@@ -139,7 +139,7 @@ D:\MNN\build
 
 D:\MNN\apps\mnncli\build_mnncli
 └── Release
-└── mnncli.exe      # 命令行工具可执行文件
+└───── mnncli.exe      # 命令行工具可执行文件
 ```
 
 ## 注意事项
