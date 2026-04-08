@@ -10,7 +10,7 @@
 
 下载并安装 **[VS Community 2026](https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Stable&version=VS18)**，安装时请勾选以下组件：
 
-- ✅ **MSVC v143 - VS 2026 C++ x64/x86 生成工具**（最新版）
+- ✅ **适用于x64/x86的MSVC生成工具**（最新版）
 - ✅ **适用于 Windows 的 C++ CMake 工具**
 - ✅ **对 LLVM (clang-cl) 工具集的 MSBuild 支持**
 - ✅ **适用于 Windows 的 C++ clang 编译器**（推荐版本 `20.1.8`）
