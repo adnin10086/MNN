@@ -28,7 +28,7 @@
 
 | 操作系统 | 版本/环境 | 架构 | 状态 | 编译指引 |
 | :--- | :--- | :--- | :--- | :--- |
-| **Windows** | Windows 11 + VS2022 | x64 | ❌ 不支持| |
+| **Windows** | Windows 11 + VS2022 | x64 | ✅ 支持 | [指引](./docs/compile/mnn-windows-vs2022-build-guide.md) |
 | **Windows** | Windows 11 + VS2026 | x64 | ✅ 支持 | [指引](./docs/compile/mnn-windows-vs2026-build-guide.md) |
 | **CentOS** | 7 | x64 | ❌ 不支持 | |
 | **CentOS** | 8 | x64 | ❌ 不支持 | |
