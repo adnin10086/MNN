@@ -126,6 +126,13 @@ int ServeCommandHandler::Handle(const ParsedCommand& cmd) {
     LOG_INFO("Config path: " + config_path);
     LOG_INFO("Bind: http://" + host + ":" + std::to_string(port));
 
+    // Bind Port Fast Before Loading LLM
+    MnncliServer server;
+    if (!server.Init(host, port, read_timeout, write_timeout)) {
+        LOG_INFO("Error: Could not bind to " + host + ":" + std::to_string(port) + ". Port might be in use.");
+        return 1;
+    }
+
     // Create and load model
     auto llm = LLMManager::CreateLLM(config_path, true);
     if (has_thinking_override) {

@@ -483,8 +483,8 @@ void MnncliServer::Start(MNN::Transformer::Llm* llm, bool is_r1, const std::stri
     LOG_DEBUG("[OK] Model initialized successfully!");
     LOG_DEBUG("[START] Server ready to listen");
     LOG_DEBUG("[TIP] Press Ctrl+C to stop the server");
-    if (!server.listen(host.c_str(), port)) {
-        LOG_DEBUG("Error: Could not start server on " + host + ":" + std::to_string(port));
+    if (!server_.listen_after_bind()) {
+        LOG_DEBUG("Error: Could not start listening on port.");
     }
 }
 }
