@@ -146,6 +146,9 @@ int ServeCommandHandler::Handle(const ParsedCommand& cmd) {
 
     // Create and load model
     auto llm = LLMManager::CreateLLM(config_path, true);
+    // Enable prompt cache natively to avoid OOM while preserving context incrementally
+    llm->set_config("{\"prompt_cache\": true}");
+
     if (has_thinking_override) {
         std::string thinking_cfg = std::string("{\"jinja\":{\"context\":{\"enable_thinking\":") +
                                    (thinking_enabled ? "true" : "false") + "}}}";
