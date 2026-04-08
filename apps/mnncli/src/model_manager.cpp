@@ -55,7 +55,7 @@ int ModelManager::SearchRemoteModels(const std::string &keyword, bool verbose,
     model_repo.SetDownloadProvider(current_provider);
 
     // Show search information
-    std::cout << "🔍 Searching for LLM models with keyword: '" << keyword
+    std::cout << "[SEARCH] Searching for LLM models with keyword: '" << keyword
               << "'\n";
     std::cout << "   Current provider: " << current_provider << "\n";
     std::cout << "   Cache directory: " << cache_dir << "\n\n";
@@ -76,12 +76,12 @@ int ModelManager::SearchRemoteModels(const std::string &keyword, bool verbose,
         std::cout << "No LLM models found matching keyword: '" << keyword
                   << "' for provider: " << current_provider << "\n";
       }
-      std::cout << "\n💡 Try:\n";
-      std::cout << "  • Use a different keyword\n";
-      std::cout << "  • Change download provider: export "
+      std::cout << "\n[TIP] Try:\n";
+      std::cout << "  * Use a different keyword\n";
+      std::cout << "  * Change download provider: export "
                    "MNN_DOWNLOAD_PROVIDER=<provider>\n";
       std::cout
-          << "  • Available providers: " << mnn::downloader::ModelSources::SOURCE_HUGGING_FACE << ", " << mnn::downloader::ModelSources::SOURCE_MODEL_SCOPE << ", " << mnn::downloader::ModelSources::SOURCE_MODELERS << "\n";
+          << "  * Available providers: " << mnn::downloader::ModelSources::SOURCE_HUGGING_FACE << ", " << mnn::downloader::ModelSources::SOURCE_MODEL_SCOPE << ", " << mnn::downloader::ModelSources::SOURCE_MODELERS << "\n";
     } else {
       std::cout << "Found " << searchResults.size()
                 << " matching LLM model(s):\n\n";
@@ -119,7 +119,7 @@ int ModelManager::SearchRemoteModels(const std::string &keyword, bool verbose,
                   << std::setw(15) << tags_str << "\n";
       }
 
-      std::cout << "\n💡 To download a model, use:\n";
+      std::cout << "\n[TIP] To download a model, use:\n";
       std::cout << "  mnncli download <model_name>\n";
       std::cout << "  Example: mnncli download " << searchResults[0].modelName
                 << "\n";
@@ -154,16 +154,16 @@ int ModelManager::DownloadModel(const std::string &model_name, bool verbose,
   if (!IsValidModelName(model_name)) {
     mnncli::UserInterface::ShowError("Invalid model name format: '" +
                                      model_name + "'");
-    std::cout << "\n💡 Valid model name formats:\n";
+    std::cout << "\n[TIP] Valid model name formats:\n";
     std::cout
-        << "  • Simple name (e.g., 'qwen-7b') - will search in repository\n";
-    std::cout << "  • Full ID (e.g., 'Qwen/Qwen-7B-Chat') - direct download\n";
-    std::cout << "  • Prefixed ID (e.g., 'hf:Qwen/Qwen-7B-Chat') - specify "
+        << "  * Simple name (e.g., 'qwen-7b') - will search in repository\n";
+    std::cout << "  * Full ID (e.g., 'Qwen/Qwen-7B-Chat') - direct download\n";
+    std::cout << "  * Prefixed ID (e.g., 'hf:Qwen/Qwen-7B-Chat') - specify "
                  "provider\n";
-    std::cout << "\n💡 Try:\n";
-    std::cout << "  • Use 'mnncli search " << model_name
+    std::cout << "\n[TIP] Try:\n";
+    std::cout << "  * Use 'mnncli search " << model_name
               << "' to find available models\n";
-    std::cout << "  • Use 'mnncli list' to see downloaded models\n";
+    std::cout << "  * Use 'mnncli list' to see downloaded models\n";
     return 1;
   }
 
@@ -223,7 +223,7 @@ int ModelManager::DownloadModel(const std::string &model_name, bool verbose,
           if (model_id_opt) {
             model_id = *model_id_opt;
             source = ModelSources::SOURCE_HUGGING_FACE;
-            LOG_INFO("✓ Found model in repository: " + model_id);
+            LOG_INFO("[OK] Found model in repository: " + model_id);
           } else {
             // Fallback to default behavior
             source = ModelSources::SOURCE_HUGGING_FACE;
@@ -248,7 +248,7 @@ int ModelManager::DownloadModel(const std::string &model_name, bool verbose,
             model_repo.GetModelIdForDownload(model_name, source);
         if (model_id_opt) {
           model_id = *model_id_opt;
-          LOG_INFO("✓ Found model in repository: " + model_id);
+          LOG_INFO("[OK] Found model in repository: " + model_id);
 
           // Get model type for additional info
           std::string model_type = model_repo.GetModelType(model_id);
@@ -256,7 +256,7 @@ int ModelManager::DownloadModel(const std::string &model_name, bool verbose,
         } else {
           // Fallback to direct model name
           model_id = model_name;
-          LOG_WARNING("⚠ Model not found in repository, using direct name: " +
+          LOG_WARNING("[WARN] Model not found in repository, using direct name: " +
                       model_id);
         }
       } catch (const std::exception &e) {
@@ -268,7 +268,7 @@ int ModelManager::DownloadModel(const std::string &model_name, bool verbose,
     }
 
     // Show download information
-    LOG_INFO("🌐 Downloading from " + source);
+    LOG_INFO("[WEB] Downloading from " + source);
     LOG_INFO("   Target model: " + model_id);
     LOG_INFO("   Cache directory: " + cache_dir);
 
@@ -382,24 +382,24 @@ int ModelManager::ShowModelInfo(const std::string &model_name, bool verbose) {
 
     if (model_path.empty()) {
       mnncli::UserInterface::ShowError("Model not found: " + model_name);
-      std::cout << "\n💡 Try:\n";
-      std::cout << "  • Use 'mnncli list' to see available models\n";
-      std::cout << "  • Use 'mnncli search <keyword>' to find models\n";
-      std::cout << "  • Use 'mnncli download <name>' to download models\n";
+      std::cout << "\n[TIP] Try:\n";
+      std::cout << "  * Use 'mnncli list' to see available models\n";
+      std::cout << "  * Use 'mnncli search <keyword>' to find models\n";
+      std::cout << "  * Use 'mnncli download <name>' to download models\n";
       return 1;
     }
 
     // Display model information
-    std::cout << "📁 Model Information: " << model_name << "\n";
+    std::cout << "[DIR] Model Information: " << model_name << "\n";
     std::cout << "====================\n";
-    std::cout << "📍 Download Location: " << model_path << "\n";
+    std::cout << "[PATH] Download Location: " << model_path << "\n";
 
     // Check if it's a symlink
     std::error_code ec;
     if (fs::is_symlink(model_path, ec)) {
       auto target = fs::read_symlink(model_path, ec);
       if (!ec) {
-        std::cout << "🔗 Symlink Target: " << target.string() << "\n";
+        std::cout << "[LINK] Symlink Target: " << target.string() << "\n";
       }
     }
 
@@ -411,7 +411,7 @@ int ModelManager::ShowModelInfo(const std::string &model_name, bool verbose) {
           total_size += entry.file_size();
         }
       }
-      std::cout << "💾 Total Size: "
+      std::cout << "[SIZE] Total Size: "
                 << mnn::downloader::LogUtils::FormatFileSize(total_size) << "\n";
     } catch (const std::exception &e) {
       LOG_DEBUG_TAG("Failed to calculate directory size: " +
@@ -422,7 +422,7 @@ int ModelManager::ShowModelInfo(const std::string &model_name, bool verbose) {
     // Look for config.json file
     std::string config_path = model_path + "/config.json";
     if (fs::exists(config_path)) {
-      std::cout << "\n📋 Configuration File: " << config_path << "\n";
+      std::cout << "\n[INFO] Configuration File: " << config_path << "\n";
       std::cout << "====================\n";
 
       try {
@@ -444,32 +444,32 @@ int ModelManager::ShowModelInfo(const std::string &model_name, bool verbose) {
 
           config_file.close();
         } else {
-          std::cout << "❌ Unable to read config file\n";
+          std::cout << "[FAIL] Unable to read config file\n";
         }
       } catch (const std::exception &e) {
-        std::cout << "❌ Error reading config file: " << e.what() << "\n";
+        std::cout << "[FAIL] Error reading config file: " << e.what() << "\n";
       }
     } else {
-      std::cout << "\n⚠️  No config.json found in model directory\n";
+      std::cout << "\n[WARN] No config.json found in model directory\n";
 
       // List available files
-      std::cout << "\n📂 Available Files:\n";
+      std::cout << "\n[DIR] Available Files:\n";
       try {
         for (const auto &entry : fs::directory_iterator(model_path)) {
           if (entry.is_regular_file()) {
-            std::cout << "  📄 " << entry.path().filename().string() << "\n";
+            std::cout << "  [FILE] " << entry.path().filename().string() << "\n";
           } else if (entry.is_directory()) {
-            std::cout << "  📁 " << entry.path().filename().string() << "/\n";
+            std::cout << "  [DIR] " << entry.path().filename().string() << "/\n";
           }
         }
       } catch (const std::exception &e) {
-        std::cout << "❌ Error listing files: " << e.what() << "\n";
+        std::cout << "[FAIL] Error listing files: " << e.what() << "\n";
       }
     }
 
     // Show additional info if verbose
     if (verbose) {
-      std::cout << "\n🔍 Additional Information:\n";
+      std::cout << "\n[SEARCH] Additional Information:\n";
       std::cout << "====================\n";
       auto &config_mgr = ConfigManager::GetInstance();
       auto config = config_mgr.LoadConfig();
@@ -486,19 +486,19 @@ int ModelManager::ShowModelInfo(const std::string &model_name, bool verbose) {
           "merges.txt",        "special_tokens_map.json", "model.mnn",
           "pytorch_model.bin", "model.safetensors",       "model.bin"};
 
-      std::cout << "\n📋 Model Files Status:\n";
+      std::cout << "\n[INFO] Model Files Status:\n";
       for (const auto &file : common_files) {
         std::string file_path = model_path + "/" + file;
         if (fs::exists(file_path)) {
           try {
             auto file_size = fs::file_size(file_path);
-            std::cout << "  ✅ " << file << " ("
+            std::cout << "  [OK] " << file << " ("
                       << mnn::downloader::LogUtils::FormatFileSize(file_size) << ")\n";
           } catch (...) {
-            std::cout << "  ✅ " << file << " (size unknown)\n";
+            std::cout << "  [OK] " << file << " (size unknown)\n";
           }
         } else {
-          std::cout << "  ❌ " << file << "\n";
+          std::cout << "  [FAIL] " << file << "\n";
         }
       }
     }

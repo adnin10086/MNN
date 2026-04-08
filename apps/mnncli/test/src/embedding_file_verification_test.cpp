@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by Claude Code on 2025/10/10.
 // Copyright (c) 2025 Alibaba Group Holding Limited All rights reserved.
 //
@@ -21,10 +21,10 @@ using namespace mnncli;
 // Test helper functions
 void assertTrue(bool condition, const std::string& testName) {
   if (!condition) {
-    std::cerr << "❌ Test failed: " << testName << std::endl;
+    std::cerr << "[FAIL] Test failed: " << testName << std::endl;
     assert(false);
   } else {
-    std::cout << "✅ " << testName << " passed" << std::endl;
+    std::cout << "[OK] " << testName << " passed" << std::endl;
   }
 }
 
@@ -73,9 +73,9 @@ void testEmbeddingFileDownloadAndVerification(const std::string& model_id, const
                   (metadata.location.find("cdn.") != std::string::npos);
 
     if (is_cdn) {
-      std::cout << "  ⚠️  File is served from CDN!" << std::endl;
+      std::cout << "  [WARN]  File is served from CDN!" << std::endl;
     } else {
-      std::cout << "  ✅ File is served directly from HuggingFace" << std::endl;
+      std::cout << "  [OK] File is served directly from HuggingFace" << std::endl;
     }
 
     // Create download task
@@ -127,7 +127,7 @@ void testEmbeddingFileDownloadAndVerification(const std::string& model_id, const
     auto end_time = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
 
-    std::cout << "\n✅ Download completed in " << duration.count() << " ms" << std::endl;
+    std::cout << "\n[OK] Download completed in " << duration.count() << " ms" << std::endl;
 
     // Verify file was downloaded
     assertTrue(std::filesystem::exists(file_cache_path), "Downloaded file exists");
@@ -161,7 +161,7 @@ void testEmbeddingFileDownloadAndVerification(const std::string& model_id, const
       std::cout << "\nCalculating SHA-256 hash..." << std::endl;
       actual_hash = HfShaVerifier::sha256Hex(file_cache_path);
     } else {
-      std::cout << "❌ Unknown hash type!" << std::endl;
+      std::cout << "[FAIL] Unknown hash type!" << std::endl;
       assert(false);
     }
 
@@ -172,10 +172,10 @@ void testEmbeddingFileDownloadAndVerification(const std::string& model_id, const
     bool verify_result = HfShaVerifier::verify(metadata.etag, file_cache_path);
 
     if (verify_result) {
-      std::cout << "\n✅ SHA verification PASSED for " << filename << std::endl;
-      std::cout << "🎉 Embedding file verification successful!" << std::endl;
+      std::cout << "\n[OK] SHA verification PASSED for " << filename << std::endl;
+      std::cout << "[SUCCESS] Embedding file verification successful!" << std::endl;
     } else {
-      std::cout << "\n❌ SHA verification FAILED for " << filename << std::endl;
+      std::cout << "\n[FAIL] SHA verification FAILED for " << filename << std::endl;
       std::cout << "   This indicates a potential issue with:" << std::endl;
       std::cout << "   1. CDN serving different content" << std::endl;
       std::cout << "   2. ETag mismatch from metadata vs actual file" << std::endl;
@@ -201,14 +201,14 @@ void testEmbeddingFileDownloadAndVerification(const std::string& model_id, const
     if (verify_result) {
       assertTrue(verify_result, "SHA verification passed for " + filename);
     } else {
-      std::cout << "\n⚠️  Verification failed, but continuing for analysis..." << std::endl;
+      std::cout << "\n[WARN]  Verification failed, but continuing for analysis..." << std::endl;
     }
 
     // Clean up
     std::filesystem::remove(file_cache_path);
 
   } catch (const std::exception& e) {
-    std::cerr << "❌ Download and verification test failed for " << filename << ": "
+    std::cerr << "[FAIL] Download and verification test failed for " << filename << ": "
               << e.what() << std::endl;
     assert(false);
   }
@@ -237,13 +237,13 @@ int main() {
     testEmbeddingFileDownloadAndVerification(model_id, embedding_file, cache_path);
 
     std::cout << "\n==========================================" << std::endl;
-    std::cout << "🎉 Embedding file verification test completed!" << std::endl;
+    std::cout << "[SUCCESS] Embedding file verification test completed!" << std::endl;
     std::cout << "==========================================" << std::endl;
 
     return 0;
 
   } catch (const std::exception& e) {
-    std::cerr << "\n❌ Test suite failed with exception: " << e.what() << std::endl;
+    std::cerr << "\n[FAIL] Test suite failed with exception: " << e.what() << std::endl;
     return 1;
   }
 }

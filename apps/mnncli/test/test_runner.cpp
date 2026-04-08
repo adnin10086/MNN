@@ -49,11 +49,11 @@ public:
             results_.push_back(result);
 
             if (result.passed) {
-                std::cout << "✅ PASSED: " << result.name << " (";
+                std::cout << "[OK] PASSED: " << result.name << " (";
                 std::cout << result.duration << "s)\n";
                 passed_count++;
             } else {
-                std::cout << "❌ FAILED: " << result.name << " (";
+                std::cout << "[FAIL] FAILED: " << result.name << " (";
                 std::cout << result.duration << "s)\n";
                 std::cout << "   Output: " << result.output.substr(0, 200) << "...\n";
                 failed_count++;
@@ -70,9 +70,9 @@ public:
         std::cout << "Failed: " << failed_count << "\n";
 
         if (failed_count == 0) {
-            std::cout << "\n🎉 All tests passed!\n";
+            std::cout << "\n[SUCCESS] All tests passed!\n";
         } else {
-            std::cout << "\n⚠️  Some tests failed. Please check the output above.\n";
+            std::cout << "\n[WARN] Some tests failed. Please check the output above.\n";
         }
     }
 

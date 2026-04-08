@@ -76,19 +76,19 @@ int ModelRunner::EvalFile(const std::string& prompt_file) {
 }
 
 void ModelRunner::InteractiveChat() {
-    std::cout << "🚀 Starting interactive chat mode...\n";
+    std::cout << "[START] Starting interactive chat mode...\n";
     std::cout << "Commands: /help, /reset, /config, /exit\n";
 #ifdef LLM_SUPPORT_VISION
 #ifndef OPENCV_NOT_AVAILABLE
-    std::cout << "💡 You can also use video prompts: <video>path/to/video.mp4</video>\n";
+    std::cout << "[TIP] You can also use video prompts: <video>path/to/video.mp4</video>\n";
 #else
-    std::cout << "⚠️  Video processing is disabled (OpenCV not available)\n";
+    std::cout << "[WARN] Video processing is disabled (OpenCV not available)\n";
 #endif
 #endif
     std::cout << "\n";
     
     while (true) {
-        std::cout << "👤 User: ";
+        std::cout << "[USER] User: ";
         std::string input;
         if (!std::getline(std::cin, input)) {
             std::cout << "\n";
@@ -100,7 +100,7 @@ void ModelRunner::InteractiveChat() {
         else if (input == "/reset") ResetConversation();
         else if (input == "/config") ShowConfig();
         else if (!input.empty()) {
-            std::cout << "\n🤖 Assistant: " << std::flush;
+            std::cout << "\n[BOT] Assistant: " << std::flush;
             // Use ProcessPrompt to handle both text and video prompts
             ProcessPrompt(input, &std::cout);
             std::cout << "\n";
@@ -420,7 +420,7 @@ void ModelRunner::ShowChatHelp() {
 
 void ModelRunner::ResetConversation() {
     llm_->reset();
-    std::cout << "🔄 Conversation context reset.\n\n";
+    std::cout << "[SYNC] Conversation context reset.\n\n";
 }
 
 void ModelRunner::ShowConfig() {

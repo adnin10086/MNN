@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by AI Assistant on 2024/12/25.
 // Copyright (c) 2024 Alibaba Group Holding Limited All rights reserved.
 //
@@ -24,19 +24,19 @@ using namespace mnncli;
 // Test helper functions
 void assertTrue(bool condition, const std::string& testName) {
   if (!condition) {
-    std::cerr << "❌ Test failed: " << testName << std::endl;
+    std::cerr << "[FAIL] Test failed: " << testName << std::endl;
     assert(false);
   } else {
-    std::cout << "✅ " << testName << " passed" << std::endl;
+    std::cout << "[OK] " << testName << " passed" << std::endl;
   }
 }
 
 void assertFalse(bool condition, const std::string& testName) {
   if (condition) {
-    std::cerr << "❌ Test failed: " << testName << std::endl;
+    std::cerr << "[FAIL] Test failed: " << testName << std::endl;
     assert(false);
   } else {
-    std::cout << "✅ " << testName << " passed" << std::endl;
+    std::cout << "[OK] " << testName << " passed" << std::endl;
   }
 }
 
@@ -75,8 +75,8 @@ void compareFileMetadata(const std::string& file1_name, const HfFileMetadata& me
                       (meta2.location.find("cdn.") != std::string::npos);
   
   std::cout << std::left << std::setw(30) << "  Is CDN:" 
-            << std::setw(50) << (meta1_is_cdn ? "YES ⚠️" : "NO")
-            << std::setw(50) << (meta2_is_cdn ? "YES ⚠️" : "NO") << std::endl;
+            << std::setw(50) << (meta1_is_cdn ? "YES [WARN]" : "NO")
+            << std::setw(50) << (meta2_is_cdn ? "YES [WARN]" : "NO") << std::endl;
   
   // Compare ETags
   std::cout << std::left << std::setw(30) << "ETag:" 
@@ -109,12 +109,12 @@ void compareFileMetadata(const std::string& file1_name, const HfFileMetadata& me
   
   // Highlight differences
   if (meta1_is_cdn != meta2_is_cdn) {
-    std::cout << "⚠️  WARNING: One file uses CDN, the other doesn't!" << std::endl;
+    std::cout << "[WARN]  WARNING: One file uses CDN, the other doesn't!" << std::endl;
     std::cout << "   This may cause different verification behavior." << std::endl;
   }
   
   if (meta1.etag.length() != meta2.etag.length()) {
-    std::cout << "⚠️  WARNING: Different ETag hash types detected!" << std::endl;
+    std::cout << "[WARN]  WARNING: Different ETag hash types detected!" << std::endl;
   }
 }
 
@@ -154,15 +154,15 @@ void testFileMetadataDetailed(const std::string& model_id, const std::string& fi
                   (metadata.location.find("cdn.") != std::string::npos);
     
     if (is_cdn) {
-      std::cout << "  ⚠️  File is served from CDN!" << std::endl;
+      std::cout << "  [WARN]  File is served from CDN!" << std::endl;
     } else {
-      std::cout << "  ✅ File is served directly from HuggingFace" << std::endl;
+      std::cout << "  [OK] File is served directly from HuggingFace" << std::endl;
     }
     
-    std::cout << "\n✅ Detailed metadata test passed for " << filename << std::endl;
+    std::cout << "\n[OK] Detailed metadata test passed for " << filename << std::endl;
     
   } catch (const std::exception& e) {
-    std::cerr << "❌ Detailed metadata test failed for " << filename << ": " << e.what() << std::endl;
+    std::cerr << "[FAIL] Detailed metadata test failed for " << filename << ": " << e.what() << std::endl;
     assert(false);
   }
 }
@@ -247,7 +247,7 @@ void testFileDownloadAndVerification(const std::string& model_id, const std::str
     auto end_time = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
     
-    std::cout << "\n✅ Download completed in " << duration.count() << " ms" << std::endl;
+    std::cout << "\n[OK] Download completed in " << duration.count() << " ms" << std::endl;
     
     // Verify file was downloaded
     assertTrue(std::filesystem::exists(file_cache_path), "Downloaded file exists");
@@ -279,7 +279,7 @@ void testFileDownloadAndVerification(const std::string& model_id, const std::str
       std::cout << "\nCalculating SHA-256 hash..." << std::endl;
       actual_hash = HfShaVerifier::sha256Hex(file_cache_path);
     } else {
-      std::cout << "❌ Unknown hash type!" << std::endl;
+      std::cout << "[FAIL] Unknown hash type!" << std::endl;
       assert(false);
     }
     
@@ -290,9 +290,9 @@ void testFileDownloadAndVerification(const std::string& model_id, const std::str
     bool verify_result = HfShaVerifier::verify(metadata.etag, file_cache_path);
     
     if (verify_result) {
-      std::cout << "\n✅ SHA verification PASSED for " << filename << std::endl;
+      std::cout << "\n[OK] SHA verification PASSED for " << filename << std::endl;
     } else {
-      std::cout << "\n❌ SHA verification FAILED for " << filename << std::endl;
+      std::cout << "\n[FAIL] SHA verification FAILED for " << filename << std::endl;
       std::cout << "   This indicates a potential issue with:" << std::endl;
       std::cout << "   1. CDN serving different content" << std::endl;
       std::cout << "   2. ETag mismatch from metadata vs actual file" << std::endl;
@@ -316,7 +316,7 @@ void testFileDownloadAndVerification(const std::string& model_id, const std::str
     assertTrue(verify_result, "SHA verification passed for " + filename);
     
   } catch (const std::exception& e) {
-    std::cerr << "❌ Download and verification test failed for " << filename << ": " 
+    std::cerr << "[FAIL] Download and verification test failed for " << filename << ": " 
               << e.what() << std::endl;
     assert(false);
   }
@@ -361,10 +361,10 @@ void testBinVsJsonComparison() {
     // Compare metadata side by side
     compareFileMetadata(bin_file, bin_metadata, json_file, json_metadata);
     
-    std::cout << "\n✅ Comparison test completed" << std::endl;
+    std::cout << "\n[OK] Comparison test completed" << std::endl;
     
   } catch (const std::exception& e) {
-    std::cerr << "❌ Comparison test failed: " << e.what() << std::endl;
+    std::cerr << "[FAIL] Comparison test failed: " << e.what() << std::endl;
     assert(false);
   }
 }
@@ -419,17 +419,17 @@ int main(int argc, char* argv[]) {
       // Test 4: Download and verify .bin file (investigate failure)
       testFileDownloadAndVerification(model_id, "embeddings_bf16.bin", cache_path);
     } else {
-      std::cout << "\n⚠️  Skipping download tests (--skip-download flag)" << std::endl;
+      std::cout << "\n[WARN]  Skipping download tests (--skip-download flag)" << std::endl;
     }
     
     std::cout << "\n==========================================" << std::endl;
-    std::cout << "🎉 All tests completed!" << std::endl;
+    std::cout << "[SUCCESS] All tests completed!" << std::endl;
     std::cout << "==========================================" << std::endl;
     
     return 0;
     
   } catch (const std::exception& e) {
-    std::cerr << "\n❌ Test suite failed with exception: " << e.what() << std::endl;
+    std::cerr << "\n[FAIL] Test suite failed with exception: " << e.what() << std::endl;
     return 1;
   }
 }

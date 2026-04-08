@@ -96,9 +96,9 @@ int main() {
         bool verify_result = HfShaVerifier::verify(metadata.etag, test_file_path);
 
         if (verify_result) {
-            std::cout << "✅ Verification PASSED!" << std::endl;
+            std::cout << "[OK] Verification PASSED!" << std::endl;
         } else {
-            std::cout << "❌ Verification FAILED!" << std::endl;
+            std::cout << "[FAIL] Verification FAILED!" << std::endl;
 
             // Let's manually check what hashes we get
             std::string actual_hash;
