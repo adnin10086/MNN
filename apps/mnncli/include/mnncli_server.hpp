@@ -73,4 +73,5 @@ private:
                      std::function<void(const std::string&, bool end)> on_partial);
     std::mutex llm_mutex_;
     httplib::Server server_;
-}
+};
+} // namespace mnncli
