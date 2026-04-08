@@ -71,6 +71,13 @@ elseif(UNIX AND NOT ANDROID)
         target_include_directories(mnn_model_downloader PRIVATE ${OPENSSL_INCLUDE_DIR})
         target_compile_definitions(mnn_model_downloader PRIVATE CPPHTTPLIB_OPENSSL_SUPPORT)
     endif()
+elseif(WIN32)
+    find_package(OpenSSL REQUIRED)
+    if(OpenSSL_FOUND)
+        target_include_directories(mnn_model_downloader PRIVATE ${OPENSSL_INCLUDE_DIR})
+        target_compile_definitions(mnn_model_downloader PRIVATE CPPHTTPLIB_OPENSSL_SUPPORT)
+        target_link_libraries(mnn_model_downloader PRIVATE ${OPENSSL_LIBRARIES})
+    endif()
 endif()
 
 # Android OpenSSL
@@ -88,7 +95,11 @@ if(ANDROID)
 endif()
 
 # Compiler options
-target_compile_options(mnn_model_downloader PRIVATE -fexceptions)
+if(MSVC)
+    target_compile_options(mnn_model_downloader PRIVATE /EHsc)
+else()
+    target_compile_options(mnn_model_downloader PRIVATE -fexceptions)
+endif()
 target_compile_definitions(mnn_model_downloader PRIVATE CPPHTTPLIB_NO_BROTLI)
 target_compile_definitions(mnn_model_downloader PRIVATE CPPHTTPLIB_NO_EXCEPTIONS)
 

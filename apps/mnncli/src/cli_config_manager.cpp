@@ -322,16 +322,16 @@ Config ConfigManager::LoadFromEnvironment() {
 }
 
 Config ConfigManager::GetDefaultConfig() {
-    return {
-        .default_model = "",
-        .cache_dir = mnncli::kConfigPath,
-        .log_level = "info",
-        .default_max_tokens = 1000,
-        .default_temperature = 0.7f,
-        .api_host = "127.0.0.1",
-        .api_port = 8000,
-        .download_provider = "modelscope"
-    };
+    Config config;
+    config.default_model = "";
+    config.cache_dir = mnncli::kConfigPath;
+    config.log_level = "info";
+    config.default_max_tokens = 1000;
+    config.default_temperature = 0.7f;
+    config.api_host = "127.0.0.1";
+    config.api_port = 8000;
+    config.download_provider = "modelscope";
+    return config;
 }
 
 bool ConfigManager::ResetConfig() {

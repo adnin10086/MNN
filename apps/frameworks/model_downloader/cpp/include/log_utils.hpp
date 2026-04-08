@@ -26,6 +26,10 @@ namespace Colors {
 }
 
 // Log levels enum
+// Windows wingdi.h defines ERROR as 0, which conflicts with enum names
+#if defined(_WIN32) && defined(ERROR)
+#undef ERROR
+#endif
 enum class LogLevel {
     DEBUG_LEVEL,
     INFO,
@@ -108,8 +112,10 @@ private:
 #define LOG_ERROR_9(msg, ...) mnn::downloader::LogUtils::ErrorFormatted(msg, ##__VA_ARGS__)
 #define LOG_ERROR_10(msg, ...) mnn::downloader::LogUtils::ErrorFormatted(msg, ##__VA_ARGS__)
 
+// MSVC expands __VA_ARGS__ as a single token; EXPAND forces re-scan
+#define EXPAND(x) x
 #define GET_MACRO(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, NAME, ...) NAME
-#define LOG_ERROR(...) GET_MACRO(__VA_ARGS__, LOG_ERROR_10, LOG_ERROR_9, LOG_ERROR_8, LOG_ERROR_7, LOG_ERROR_6, LOG_ERROR_5, LOG_ERROR_4, LOG_ERROR_3, LOG_ERROR_2, LOG_ERROR_1)(__VA_ARGS__)
+#define LOG_ERROR(...) EXPAND(GET_MACRO(__VA_ARGS__, LOG_ERROR_10, LOG_ERROR_9, LOG_ERROR_8, LOG_ERROR_7, LOG_ERROR_6, LOG_ERROR_5, LOG_ERROR_4, LOG_ERROR_3, LOG_ERROR_2, LOG_ERROR_1)(__VA_ARGS__))
 
 // Special macro for string concatenation cases
 #define LOG_ERROR_STR(msg) mnn::downloader::LogUtils::Error(msg)

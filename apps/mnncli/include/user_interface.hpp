@@ -16,7 +16,7 @@ namespace mnncli {
 class UserInterface {
 public:
     static void ShowWelcome() {
-        std::cout << "🚀 MNN CLI - MNN Command Line Interface\n";
+        std::cout << "MNN CLI - MNN Command Line Interface\n";
         std::cout << "Type 'mnncli --help' for available commands\n\n";
     }
     
@@ -25,14 +25,14 @@ public:
         int pos = static_cast<int>(bar_width * progress);
         
         // Clear the line first to prevent leftover characters
-        std::cout << "\r\033[K" << message << " [";
+        std::cout << "\r" << message << " [";
         for (int i = 0; i < bar_width; ++i) {
             if (i < pos) {
-                std::cout << "█";  // Filled block
+                std::cout << "#";
             } else if (i == pos) {
-                std::cout << "▶";  // Arrow
+                std::cout << ">";
             } else {
-                std::cout << "░";  // Light block
+                std::cout << "-";
             }
         }
         // Add padding to prevent leftover characters
@@ -48,18 +48,18 @@ public:
     }
 
     static void ShowError(const std::string& error, const std::string& suggestion = "") {
-        std::cerr << "❌ Error: " << error << std::endl;
+        std::cerr << "[ERROR] " << error << std::endl;
         if (!suggestion.empty()) {
-            std::cerr << "💡 Suggestion: " << suggestion << std::endl;
+            std::cerr << "[TIP] " << suggestion << std::endl;
         }
     }
     
     static void ShowSuccess(const std::string& message) {
-        std::cout << "✅ " << message << std::endl;
+        std::cout << "[OK] " << message << std::endl;
     }
     
     static void ShowInfo(const std::string& message) {
-        std::cout << "ℹ️  " << message << std::endl;
+        std::cout << "[INFO] " << message << std::endl;
     }
 };
 
