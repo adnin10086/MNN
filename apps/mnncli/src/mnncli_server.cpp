@@ -238,14 +238,14 @@ void MnncliServer::Start(MNN::Transformer::Llm* llm, bool is_r1, const std::stri
       res.set_content("{\"status\": \"ok\"}", "application/json");
     });
     
-    server.Get("/v1/models", [&](const httplib::Request &req, httplib::Response &res) {
-      LOG_DEBUG("GET /v1/models");
+    auto modelsHandler = [model_name](const httplib::Request &req, httplib::Response &res) {
+      LOG_DEBUG("GET " + req.path);
       AllowCors(res);
       json models_response = {
         {"object", "list"},
         {"data", json::array({
           {
-            {"id", "ModelScope/MNN/Qwen2.5-0.5B-Instruct"},
+            {"id", model_name},
             {"object", "model"},
             {"created", static_cast<int>(time(nullptr))},
             {"owned_by", "mnn"}

@@ -148,8 +148,7 @@ int ServeCommandHandler::Handle(const ParsedCommand& cmd) {
     bool is_r1 = (lower_path.find("deepseek-r1") != std::string::npos);
 
     // Start HTTP server (blocking call)
-    MnncliServer server;
-    server.Start(llm.get(), is_r1, host, port);
+    server.Start(llm.get(), is_r1, model_name);
 
     return 0;
 }
