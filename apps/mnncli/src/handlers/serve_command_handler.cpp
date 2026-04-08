@@ -57,6 +57,8 @@ int ServeCommandHandler::Handle(const ParsedCommand& cmd) {
     int port = -1;
     bool has_thinking_override = false;
     bool thinking_enabled = true;
+    int read_timeout = 300;
+    int write_timeout = 300;
 
     // Extract options
     host = CommandParser::GetOption(cmd, "host", "");
@@ -69,6 +71,15 @@ int ServeCommandHandler::Handle(const ParsedCommand& cmd) {
                                  "Use --thinking true|false (also supports 1|0, on|off, yes|no)");
         std::cout << MakeUsage(mnncli::GetSpec("serve")) << "\n";
         return 1;
+    }
+
+    auto read_timeout_str = CommandParser::GetOption(cmd, "read_timeout", "");
+    if (!read_timeout_str.empty()) {
+        try { read_timeout = std::stoi(read_timeout_str); } catch (...) { read_timeout = 300; }
+    }
+    auto write_timeout_str = CommandParser::GetOption(cmd, "write_timeout", "");
+    if (!write_timeout_str.empty()) {
+        try { write_timeout = std::stoi(write_timeout_str); } catch (...) { write_timeout = 300; }
     }
 
     // Determine model name (if provided as positional)

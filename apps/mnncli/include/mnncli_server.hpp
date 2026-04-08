@@ -63,6 +63,7 @@ class Utf8StreamProcessor {
   };
 class MnncliServer {
   public:
+    bool Init(const std::string& host, int port, int read_timeout, int write_timeout);
     void Start(MNN::Transformer::Llm* llm, bool is_r1, const std::string& model_name);
     bool is_r1_{false};
 private:

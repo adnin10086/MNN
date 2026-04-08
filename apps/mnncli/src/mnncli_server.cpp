@@ -221,10 +221,14 @@ void AllowCors(httplib::Response& res) {
     res.set_header("Access-Control-Allow-Headers",  "Content-Type, Authorization");
 }
 
-void MnncliServer::Start(MNN::Transformer::Llm* llm, bool is_r1, const std::string& host, int port) {
+bool MnncliServer::Init(const std::string& host, int port, int read_timeout, int write_timeout) {
+    server_.set_read_timeout(read_timeout, 0);
+    server_.set_write_timeout(write_timeout, 0);
+    return server_.bind_to_port(host.c_str(), port);
+}
+
+void MnncliServer::Start(MNN::Transformer::Llm* llm, bool is_r1, const std::string& model_name) {
     this->is_r1_ = is_r1;
-    // Create a server instance
-    httplib::Server server;
 
     // Define a route for the GET request on "/"
     server_.Get("/", [this](const httplib::Request& req, httplib::Response& res) {
