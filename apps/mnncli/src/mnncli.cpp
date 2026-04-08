@@ -176,6 +176,8 @@ private:
         std::cout << "  mnncli run -p \"Hello world\"         # Run with prompt using default model\n";
         std::cout << "  mnncli serve qwen-7b --port 8000    # Start API server\n";
         std::cout << "  mnncli benchmark qwen-7b            # Run benchmark\n";
+        std::cout << "  mnncli serve -c D:\\Qwen3.5-35B-A3B-MNN\\llm_config.json  # Start API server with local model\n";
+        std::cout << "  mnncli benchmark -c D:\\Qwen3.5-35B-A3B-MNN\\llm_config.json  # Run benchmark with local model\n";
     }
     
     
