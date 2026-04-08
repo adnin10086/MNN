@@ -26,21 +26,21 @@
 
 #### 支持的环境列表
 
-| 操作系统 | 版本/环境 | 架构 | 状态 |
+| 操作系统 | 版本/环境 | 架构 | 状态 | 编译指引 |
 | :--- | :--- | :--- | :--- |
-| **Windows** | Windows 11 + VS2022 | x64 | ❌ 不支持|
-| **Windows** | Windows 11 + VS2026 | x64 | ❌ 不支持 |
-| **CentOS** | 7 | x64 | ❌ 不支持 |
-| **CentOS** | 8 | x64 | ❌ 不支持 |
-| **CentOS** | Stream | x64 | ❌ 不支持 |
-| **Rocky Linux** | 9 | x64 | ❌ 不支持 |
-| **Rocky Linux** | 10 | x64 | ❌ 不支持 |
-| **Ubuntu** | 20.04 | x64 | ❌ 不支持 |
-| **Ubuntu** | 22.04 | x64 | ❌ 不支持 |
-| **Ubuntu** | 24.04 | x64 | ❌ 不支持 |
-| **Ubuntu** | 26.04 | x64 | ❌ 不支持 |
-| **Debian** | 11 | x64 | ❌ 不支持 |
-| **Debian** | 12 | x64 | ❌ 不支持 |
+| **Windows** | Windows 11 + VS2022 | x64 | ❌ 不支持| |
+| **Windows** | Windows 11 + VS2026 | x64 | ✅ 支持 | [指引](./docs/compile/mnn-windows-vs2026-build-guide.md) |
+| **CentOS** | 7 | x64 | ❌ 不支持 | |
+| **CentOS** | 8 | x64 | ❌ 不支持 | |
+| **CentOS** | Stream | x64 | ❌ 不支持 | |
+| **Rocky Linux** | 9 | x64 | ❌ 不支持 | |
+| **Rocky Linux** | 10 | x64 | ❌ 不支持 | |
+| **Ubuntu** | 20.04 | x64 | ❌ 不支持 | |
+| **Ubuntu** | 22.04 | x64 | ❌ 不支持 | |
+| **Ubuntu** | 24.04 | x64 | ❌ 不支持 | |
+| **Ubuntu** | 26.04 | x64 | ❌ 不支持 | |
+| **Debian** | 11 | x64 | ❌ 不支持 | |
+| **Debian** | 12 | x64 | ❌ 不支持 | |
 
 ### 3. 媒体格式支持
 
