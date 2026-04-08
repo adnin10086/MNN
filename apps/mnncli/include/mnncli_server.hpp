@@ -72,5 +72,5 @@ private:
                      const json& messages,
                      std::function<void(const std::string&, bool end)> on_partial);
     std::mutex llm_mutex_;
-httplib::Server server_;
+    httplib::Server server_;
 }
