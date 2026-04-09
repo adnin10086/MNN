@@ -30,7 +30,7 @@
 #ifdef MNN_USE_ARMV82
 #include "backend/arm82/Arm82Backend.hpp"
 #endif
-#define MAX_THREAD_NUMBER 32
+#define MAX_THREAD_NUMBER 64
 #define LARGE_MEMORY 1024 * 1024 * 500
 #ifdef MNN_SUPPORT_BF16
 #include "bf16/BF16Functions.hpp"
