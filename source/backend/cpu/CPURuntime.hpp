@@ -22,6 +22,8 @@ struct MNNCPUInfo {
     bool i8mm = false;
     bool sve2 = false;
     bool sme2 = false;
+    bool sse41 = false;
+    bool avx512 = false;
     std::vector<CPUGroup> groups;
  // RVV attributes
     bool rvv = false;

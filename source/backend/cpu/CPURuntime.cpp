@@ -73,6 +73,9 @@
 #include <vector>
 #include "backend/cpu/CPURuntime.hpp"
 #include "core/FileLoader.hpp"
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
+#include "backend/cpu/x86_x64/cpu_id.h"
+#endif
 
 #define BUFFER_SIZE 1024
 
@@ -1190,6 +1193,17 @@ struct cpuinfo_arm_chipset cpuinfo_arm_android_decode_chipset(const struct cpuin
     // MNN_PRINT("chipset vendor, series, model is: %d, %d, %d\n", chipset.vendor, chipset.series, chipset.model);
     return chipset;
 }
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
+static void _getInfoX86(MNNCPUInfo* cpuinfo_isa) {
+    auto flags = libyuv::InitCpuFlags();
+    if (flags & libyuv::kCpuHasSSE41) {
+        cpuinfo_isa->sse41 = true;
+    }
+    if (flags & (libyuv::kCpuHasAVX512BW | libyuv::kCpuHasAVX512VL | libyuv::kCpuHasAVX512VNNI)) {
+        cpuinfo_isa->avx512 = true;
+    }
+}
+#endif
 static void _getInfoArm(MNNCPUInfo* cpuinfo_isa) {
     // Get White List And Black List
     struct cpuinfo_arm_linux_processor* arm_linux_processors = NULL;
@@ -1590,6 +1604,8 @@ static void _fillInfo(MNNCPUInfo* cpuinfo_isa) {
     cpuinfo_isa->i8mm = false;
     cpuinfo_isa->sve2 = false;
     cpuinfo_isa->sme2 = false;
+    cpuinfo_isa->sse41 = false;
+    cpuinfo_isa->avx512 = false;
     // android
     /**Get CPU Info*/
 #ifdef __linux__
@@ -1692,8 +1708,11 @@ static void _fillInfo(MNNCPUInfo* cpuinfo_isa) {
     cpuinfo_isa->fp16arith = true;
     cpuinfo_isa->dot = true;
 #endif
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
+    _getInfoX86(cpuinfo_isa);
+#endif
 
-    MNN_PRINT("The device supports: i8sdot:%d, fp16:%d, i8mm: %d, sve2: %d, sme2: %d\n",
-            cpuinfo_isa->dot, cpuinfo_isa->fp16arith, cpuinfo_isa->i8mm, cpuinfo_isa->sve2, cpuinfo_isa->sme2);
+    MNN_PRINT("The device supports: i8sdot:%d, fp16:%d, i8mm: %d, sve2: %d, sme2: %d, sse4.1:%d, avx512:%d\n",
+            cpuinfo_isa->dot, cpuinfo_isa->fp16arith, cpuinfo_isa->i8mm, cpuinfo_isa->sve2, cpuinfo_isa->sme2, cpuinfo_isa->sse41, cpuinfo_isa->avx512);
     return;
 }
