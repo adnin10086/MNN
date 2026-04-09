@@ -1193,17 +1193,7 @@ struct cpuinfo_arm_chipset cpuinfo_arm_android_decode_chipset(const struct cpuin
     // MNN_PRINT("chipset vendor, series, model is: %d, %d, %d\n", chipset.vendor, chipset.series, chipset.model);
     return chipset;
 }
-#if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
-static void _getInfoX86(MNNCPUInfo* cpuinfo_isa) {
-    auto flags = libyuv::InitCpuFlags();
-    if (flags & libyuv::kCpuHasSSE41) {
-        cpuinfo_isa->sse41 = true;
-    }
-    if (flags & (libyuv::kCpuHasAVX512BW | libyuv::kCpuHasAVX512VL | libyuv::kCpuHasAVX512VNNI)) {
-        cpuinfo_isa->avx512 = true;
-    }
-}
-#endif
+
 static void _getInfoArm(MNNCPUInfo* cpuinfo_isa) {
     // Get White List And Black List
     struct cpuinfo_arm_linux_processor* arm_linux_processors = NULL;
@@ -1589,6 +1579,9 @@ static std::vector<int> _readNumber(const char* data, int length) {
 }
 static MNNCPUInfo* gCPUInfo = nullptr;
 static void _fillInfo(MNNCPUInfo* cpuInfo);
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
+static void _getInfoX86(MNNCPUInfo* cpuinfo_isa);
+#endif
 const MNNCPUInfo* MNNGetCPUInfo() {
     if (nullptr != gCPUInfo) {
         return gCPUInfo;
@@ -1597,6 +1590,18 @@ const MNNCPUInfo* MNNGetCPUInfo() {
     _fillInfo(gCPUInfo);
     return gCPUInfo;
 }
+
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
+static void _getInfoX86(MNNCPUInfo* cpuinfo_isa) {
+    auto flags = libyuv::InitCpuFlags();
+    if (flags & libyuv::kCpuHasSSE41) {
+        cpuinfo_isa->sse41 = true;
+    }
+    if (flags & (libyuv::kCpuHasAVX512BW | libyuv::kCpuHasAVX512VL | libyuv::kCpuHasAVX512VNNI)) {
+        cpuinfo_isa->avx512 = true;
+    }
+}
+#endif
 
 static void _fillInfo(MNNCPUInfo* cpuinfo_isa) {
     cpuinfo_isa->dot = false;
@@ -1698,6 +1703,7 @@ static void _fillInfo(MNNCPUInfo* cpuinfo_isa) {
     _getInfoArm(cpuinfo_isa);
 #endif // #ifdef arm / arm64
 #endif // #ifdef __linux__
+
 
 // MacOS / IOS
 #if defined(__APPLE__) && defined(__aarch64__)
