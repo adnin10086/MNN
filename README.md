@@ -77,35 +77,6 @@ mnncli -c ./models/llm_config.json --host 0.0.0.0 --port 8080 --auth_key "your_s
 # Windows 示例
 mnncli -c ./models/llm_config.json --host 0.0.0.0 --port 8080 --auth_key "your_secret_key"
 ```
-
----
-
-## 📚 编译指引
-
-请根据您的操作系统环境选择对应的编译指南：
-
-
-### Windows
-
-1. [Windows 11 + VS2022 x64 编译指南](./docs/build_win11_vs2022.md)
-2. [Windows 11 + VS2026 x64 编译指南](./docs/build_win11_vs2026.md)
-
-### Linux - CentOS/Rocky
-
-3. [CentOS 7 x64 编译指南](./docs/build_centos7.md)
-4. [CentOS 8 x64 编译指南](./docs/build_centos8.md)
-5. [CentOS Stream x64 编译指南](./docs/build_centos_stream.md)
-6. [Rocky Linux 9 x64 编译指南](./docs/build_rocky9.md)
-7. [Rocky Linux 10 x64 编译指南](./docs/build_rocky10.md)
-
-### Linux - Ubuntu/Debian
-
-8. [Ubuntu 20.04 x64 编译指南](./docs/build_ubuntu2004.md)
-9. [Ubuntu 22.04 x64 编译指南](./docs/build_ubuntu2204.md)
-10. [Ubuntu 24.04 x64 编译指南](./docs/build_ubuntu2404.md)
-11. [Ubuntu 26.04 x64 编译指南](./docs/build_ubuntu2604.md)
-12. [Debian 11 x64 编译指南](./docs/build_debian11.md)
-13. [Debian 12 x64 编译指南](./docs/build_debian12.md)
     
 
 ---
