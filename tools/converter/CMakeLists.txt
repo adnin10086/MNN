@@ -52,7 +52,7 @@ IF(MNN_BUILD_CONVERTER)
     endif()
     if(APPLE)
         target_link_libraries(MNNConvert -Wl,-all_load MNNConvertDeps ${MNN_DEPS})
-    elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND NOT MSVC))
         # See also /path/to/MNN/CMakeLists.txt:481 when you are confused with -lpthread here.
         target_link_libraries(MNNConvert -Wl,--whole-archive MNNConvertDeps ${MNN_DEPS} -lpthread -Wl,--no-whole-archive)
     elseif (MSVC)
