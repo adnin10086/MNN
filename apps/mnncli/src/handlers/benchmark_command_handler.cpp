@@ -86,6 +86,10 @@ int BenchmarkCommandHandler::Handle(const ParsedCommand& cmd) {
 
     // Create and load model
     auto llm = LLMManager::CreateLLM(config_path, true);
+    if (!llm) {
+        LOG_INFO("Error: Failed to load LLM model");
+        return 1;
+    }
 
     // Prepare benchmark options
     LLMBenchMarkOptions options{ /*progress*/ true, /*reps*/ 1 };

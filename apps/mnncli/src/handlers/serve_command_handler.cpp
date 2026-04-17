@@ -146,6 +146,10 @@ int ServeCommandHandler::Handle(const ParsedCommand& cmd) {
 
     // Create and load model
     auto llm = LLMManager::CreateLLM(config_path, true);
+    if (!llm) {
+        LOG_INFO("Error: Failed to load LLM model");
+        return 1;
+    }
     // Enable prompt cache natively to avoid OOM while preserving context incrementally
     llm->set_config("{\"prompt_cache\": true}");
 

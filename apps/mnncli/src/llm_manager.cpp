@@ -23,9 +23,14 @@ std::unique_ptr<MNN::Transformer::Llm> LLMManager::CreateLLM(
         llm->set_config("{\"tmp_path\":\"tmp\",\"use_template\":false}");
     }
     
+    bool load_res = false;
     {
         AUTOTIME;
-        llm->load();
+        load_res = llm->load();
+    }
+    
+    if (!load_res) {
+        return nullptr;
     }
     
     if (true) {
