@@ -162,6 +162,7 @@ void RunNetPass(const std::vector<std::string>& passes, std::unique_ptr<MNN::Net
             } else {
                 MNN_PRINT("[DumpPass] PostConvert::%s: no change\n", pass.c_str());
             }
+            fflush(stdout);
         }
         if (!valid) {
             LOG(INFO) << "Run " << pass << "Error\n";
@@ -200,6 +201,7 @@ std::unique_ptr<MNN::NetT> RunExtraPass(std::unique_ptr<MNN::NetT>& originNet,
     }
     if (dumpPass) {
         MNN_PRINT("[DumpPass] Running ExtraPass: %s\n", pass.c_str());
+        fflush(stdout);
     }
     auto& merge = MNN::Express::TemplateMerge::getInstance(pass);
     merge.onExecute(program->outputs());
@@ -214,6 +216,7 @@ std::unique_ptr<MNN::NetT> RunExtraPass(std::unique_ptr<MNN::NetT>& originNet,
 
     if (dumpPass) {
         MNN_PRINT("[DumpPass] ExtraPass::%s: ops %zu -> %zu\n", pass.c_str(), originOpCount, newNet->oplists.size());
+        fflush(stdout);
     }
     return std::move(newNet);
 }
@@ -229,6 +232,7 @@ std::unique_ptr<MNN::NetT> RunMergePass(std::unique_ptr<MNN::NetT>& originNet,
 
     if (dumpPass) {
         MNN_PRINT("[DumpPass] Running MergePass (priority=%s)\n", priorityName);
+        fflush(stdout);
     }
 
     auto program = MNN::Express::Program::create(originNet.get(), true, true);
@@ -256,6 +260,7 @@ std::unique_ptr<MNN::NetT> RunMergePass(std::unique_ptr<MNN::NetT>& originNet,
 
     if (dumpPass) {
         MNN_PRINT("[DumpPass] MergePass (priority=%s): ops %zu -> %zu\n", priorityName, originOpCount, newNet->oplists.size());
+        fflush(stdout);
     }
 
     RunNetPass({"RemoveUnusefulOp"}, newNet);

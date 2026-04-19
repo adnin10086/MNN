@@ -146,6 +146,10 @@ bool TemplateMerge::onExecute(const std::vector<VARP>& outputs, PassPriority pri
                 }
                 // track arguments need by Expr::create, not create backup expr to avoid influence optimize
                 auto originArgs = make_tuple(var->extra(), var->inputs(), var->outputSize());
+                if (dumpPass) {
+                    MNN_PRINT("[DumpPass]   trying Merge::%s on node: %s\n", pass_name.c_str(), var->name().c_str());
+                    fflush(stdout);
+                }
                 if (pass(var)) {
                     auto originVar = Expr::create(std::get<0>(originArgs), std::move(std::get<1>(originArgs)), std::get<2>(originArgs));
                     if (crossBoundary(originVar, var, boundaryExpr)) {
@@ -157,6 +161,7 @@ bool TemplateMerge::onExecute(const std::vector<VARP>& outputs, PassPriority pri
                     changeCount++;
                     if (dumpPass) {
                         MNN_PRINT("[DumpPass]   Merge::%s changed node: %s\n", pass_name.c_str(), var->name().c_str());
+                        fflush(stdout);
                     }
                 } else {
                     invalidVARP.insert(var);
@@ -164,6 +169,7 @@ bool TemplateMerge::onExecute(const std::vector<VARP>& outputs, PassPriority pri
             }
             if (dumpPass && changeCount > 0) {
                 MNN_PRINT("[DumpPass]   Merge::%s: %d nodes changed\n", pass_name.c_str(), changeCount);
+                fflush(stdout);
             }
         }
         MNN::Express::ExecutorScope::Current()->gc();
