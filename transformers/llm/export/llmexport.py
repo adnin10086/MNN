@@ -104,10 +104,28 @@ class LlmExporter(torch.nn.Module):
                      self.llm_config['jinja']['bos'] = self.tokenizer.bos_token
                  if self.tokenizer.eos_token:
                      self.llm_config['jinja']['eos'] = self.tokenizer.eos_token
-        # gemma4's HF template is too complex for minja parser, use simplified version
+        # gemma4's HF template is too complex for minja parser, use simplified version.
+        # Some variants (e.g. 31B) are trained with a <|channel>thought ... <channel|>
+        # reasoning channel — without an empty thought pre-fill they loop emitting <|channel>thought.
+        # Other variants (e.g. E4B) have no thinking channel — injecting the pre-fill disturbs
+        # them (observed: user asks in Chinese, model answers in English).
+        # Detect by inspecting the original HF chat template: if it references the thinking channel,
+        # the weights were trained with it.
         if self.model_type == 'gemma4':
+            raw_tpl = self.llm_config.get('jinja', {}).get('chat_template', '') or ''
+            has_thinking_channel = '<|channel>thought' in raw_tpl
+            gen_prompt = "<|turn>model\n<|channel>thought\n<channel|>" if has_thinking_channel else "<|turn>model\n"
             self.llm_config['jinja'] = {
-                'chat_template': "{{ bos_token }}{% for message in messages %}{% if message.role == \"system\" %}<|turn>system\n{{ message.content }}<turn|>\n{% elif message.role == \"user\" %}<|turn>user\n{{ message.content }}<turn|>\n{% elif message.role == \"assistant\" %}<|turn>model\n{{ message.content }}<turn|>\n{% endif %}{% endfor %}{% if add_generation_prompt %}<|turn>model\n{% endif %}",
+                'chat_template': (
+                    "{{ bos_token }}"
+                    "{% for message in messages %}"
+                    "{% if message.role == \"system\" %}<|turn>system\n{{ message.content }}<turn|>\n"
+                    "{% elif message.role == \"user\" %}<|turn>user\n{{ message.content }}<turn|>\n"
+                    "{% elif message.role == \"assistant\" %}<|turn>model\n{{ message.content }}<turn|>\n"
+                    "{% endif %}"
+                    "{% endfor %}"
+                    "{% if add_generation_prompt %}" + gen_prompt + "{% endif %}"
+                ),
                 'bos': '<bos>',
                 'eos': '<turn|>'
             }

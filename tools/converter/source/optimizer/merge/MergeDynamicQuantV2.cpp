@@ -167,7 +167,11 @@ DynamicQuantMatmulV2::DynamicQuantMatmulV2() {
         // first term
         auto yscale = mWeightScale;
         if (mWeightScale->getInfo() && mWeightScale->getInfo()->dim.size() == 0) {
-            std::vector<float> _scale(y_reduce0->getInfo()->dim[1], mWeightScale->readMap<float>()[0]);
+            auto scale_ptr = mWeightScale->readMap<float>();
+            if (scale_ptr == nullptr) {
+                return false;
+            }
+            std::vector<float> _scale(y_reduce0->getInfo()->dim[1], scale_ptr[0]);
             yscale = _Const(_scale.data(), {(int)_scale.size()}, NHWC, halide_type_of<float>() );
         }
         auto convInt8 = _MatMul(x_int8, y_int8, yscale, false, false);

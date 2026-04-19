@@ -276,7 +276,7 @@ public:
     }
 
     bool has_ple() const {
-        return config_.find("ple_embed_file") != config_.end();
+        return config_.contains("ple_embed_file");
     }
 
     std::string ple_embed_file() const {

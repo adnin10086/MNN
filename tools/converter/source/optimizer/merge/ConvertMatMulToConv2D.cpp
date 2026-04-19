@@ -259,6 +259,9 @@ ConvertMatMulToConv2D::ConvertMatMulToConv2D() {
                     if (expr->inputs().size() == 3) { // bias is a const node.
                         auto bias = expr->inputs()[2];
                         biasPtr = bias->readMap<float>();
+                        if (biasPtr == nullptr) {
+                            return false;
+                        }
                         ::memcpy(dense->bias.data(), biasPtr, num_output * sizeof(float));
                         // Release compute cache for save memory
                         bias->expr().first->inside()->mCache = nullptr;
@@ -493,12 +496,21 @@ ConvertMatMulToConv2D::ConvertMatMulToConv2D() {
             auto outputScale = matmul_expr->inputs().at(6);
             auto outputZero  = matmul_expr->inputs().at(7);
             
-            float input_zero          = inputZero->readMap<float>()[0];
-            float input_scale         = inputScale->readMap<float>()[0];
-            const float* weight_scale = weightScale->readMap<float>();
-            const float* weight_zero  = weightZero->readMap<float>();
-            float output_scale        = outputScale->readMap<float>()[0];
-            int output_zero           = static_cast<float>(outputZero->readMap<float>()[0]);
+            auto input_zero_ptr = inputZero->readMap<float>();
+            auto input_scale_ptr = inputScale->readMap<float>();
+            auto weight_scale_ptr = weightScale->readMap<float>();
+            auto weight_zero_ptr = weightZero->readMap<float>();
+            auto output_scale_ptr = outputScale->readMap<float>();
+            auto output_zero_ptr = outputZero->readMap<float>();
+            if (nullptr == input_zero_ptr || nullptr == input_scale_ptr || nullptr == weight_scale_ptr || nullptr == weight_zero_ptr || nullptr == output_scale_ptr || nullptr == output_zero_ptr) {
+                return false;
+            }
+            float input_zero          = input_zero_ptr[0];
+            float input_scale         = input_scale_ptr[0];
+            const float* weight_scale = weight_scale_ptr;
+            const float* weight_zero  = weight_zero_ptr;
+            float output_scale        = output_scale_ptr[0];
+            int output_zero           = static_cast<int>(output_zero_ptr[0]);
             // Convint8
             std::unique_ptr<Convolution2DT> dense(new MNN::Convolution2DT);
             dense->common.reset(new MNN::Convolution2DCommonT);
@@ -532,6 +544,9 @@ ConvertMatMulToConv2D::ConvertMatMulToConv2D() {
             if (matmul_expr->inputs().size() == 9) {
                 bias_var = matmul_expr->inputs().at(8);
                 auto bias_ptr = bias_var->readMap<float>();
+                if (nullptr == bias_ptr) {
+                    return false;
+                }
                 memcpy(dense->bias.data(), bias_ptr, sizeof(int32_t) * numberOutput);
             }
 

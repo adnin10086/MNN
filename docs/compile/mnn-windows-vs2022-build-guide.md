@@ -22,7 +22,15 @@
 2. 将其放置在：`D:\Tools\ninja.exe`
 3. 将 `D:\Tools` 添加到系统环境变量 **PATH** 中
 
-### 3. 配置 vcpkg 依赖管理
+### 3. 安装 msys2 as.exe支持AVX512 汇编编译
+
+1. 从 [msys2官网](https://www.msys2.org/) 下载可执行文件
+2. 将其安装在：`D:\Tools\msys64`
+3. 安装完成后打开**MSYS2 MINGW64**
+4. 在**MSYS2 MINGW64**里使用命令`pacman -S mingw-w64-x86_64-binutils` 安装对应的环境
+5. **在系统环境变量中设置`MNN_ASSEMBLER=D:\Tools\msys64\mingw64\bin\as.exe`**
+
+### 4. 配置 vcpkg 依赖管理
 
 ```
 # 克隆仓库
@@ -83,6 +91,9 @@ cmake -G Ninja .. ^
     -DMNN_SEP_BUILD=OFF
 
 ninja -j4
+
+#执行以下命令检查是否成功编译AVX512,需要输出结果不为0
+dumpbin /disasm MNN.dll | findstr /i zmm | find /c /v ""
 ```
 
 #### 方案 B：普通模式（关闭 AVX512）

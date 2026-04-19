@@ -597,7 +597,7 @@ static std::vector<SubModuleInfo> _createSubModuleInfo(std::shared_ptr<BufferSto
             }
             if (!find) {
                 if (net->tensorName() != nullptr) {
-                    MNN_PRINT("%d tensor [ %s ] is input but not found\n", index, net->tensorName()->GetAsString(index)->c_str());
+                    MNN_PRINT("[Error][PipelineModule]Required input tensor '%s' (index %d) not found!\n", net->tensorName()->GetAsString(index)->c_str(), index);
                 }
                 success = false;
                 return std::vector<SubModuleInfo>{};

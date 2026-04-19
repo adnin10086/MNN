@@ -219,15 +219,22 @@ RemovePastKeyValue::RemovePastKeyValue() {
             return false;
         }
         expr = expr->inputs().at(0)->expr().first;
-        if (!helpers::IsConcat(expr) && expr->inputs().size() == 2) {
+        // Inner Concat of the outer `stack [concat + unsqueeze]` pattern. Required by both llm and block paths.
+        // Note: previously this was `!IsConcat(expr) && inputs().size() == 2`, which due to operator precedence
+        // only rejected nodes that were simultaneously non-Concat AND had exactly 2 inputs — letting other
+        // non-Concat shapes slip through into the branches below. The strict IsConcat check matches the
+        // documented topology above and prevents spurious matches.
+        if (!helpers::IsConcat(expr)) {
             return false;
         }
         expr = expr->inputs().at(0)->expr().first;
         // llm model
         if (helpers::IsUnsqueeze(expr)) {
-            // concat [past_k, k]
+            // concat [past_k, k]: the KV-cache concatenation node fused into Attention.
             expr = expr->inputs().at(0)->expr().first;
-            if (!helpers::IsConcat(expr) && expr->inputs().size() == 2) {
+            // Same rationale as above — strictly require Concat here to avoid false positives from the
+            // prior `&& inputs().size() == 2` logic bug.
+            if (!helpers::IsConcat(expr)) {
                 return false;
             }
             // gatherv2
